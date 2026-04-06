@@ -4,15 +4,15 @@ This repository is arranged in the requested hackathon format:
 
 ```text
 project-name/
-│
-├── README.md
-├── presentation.pptx
-│
-└── project/
-    ├── backend/
-    ├── frontend/
-    ├── design/
-    └── notebookdbec349673
+|
+|-- README.md
+|-- Byte.exe.pptx
+|
+`-- project/
+    |-- backend/
+    |-- frontend/
+    |-- design/
+    `-- notebookdbec349673
 ```
 
 ## Project Overview
@@ -32,7 +32,7 @@ Main capabilities:
 - `README.md`
   Project explanation, setup guide, required modules, and detailed run steps.
 
-- `presentation.pptx`
+- `Byte.exe.pptx`
   Hackathon presentation deck.
 
 - `project/`
@@ -300,4 +300,4 @@ Before final hackathon submission:
 
 - keep the repository public
 - make sure the repository name matches the registered team name
-- keep `README.md`, `presentation.pptx`, and `project/` at the repository root
+- keep `README.md`, `Byte.exe.pptx`, and `project/` at the repository root
