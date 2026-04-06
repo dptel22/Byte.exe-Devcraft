@@ -1,0 +1,11 @@
+{
+  "risk_level": "High Risk",
+  "confidence": 1.0,
+  "color": "red",
+  "referral": "Send to PHC immediately",
+  "reasons": [
+    "Systolic blood pressure",
+    "Mean arterial pressure",
+    "Age-glucose interaction"
+  ]
+}

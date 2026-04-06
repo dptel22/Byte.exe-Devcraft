@@ -1,0 +1,8 @@
+﻿636967e docs: expand hackathon run guide
+7ff8155 feat: implement patient risk assessment dashboard with SHAP-based counseling and follow-up guidance
+da9603f feat: implement maternal risk prediction service and integrate frontend UI components
+553f471 Merged remote with local updates preferring local versions for conflicts
+87a9e92 Initial commit of local updates
+6f76e02 fix: backend verification pass ΓÇö MaternalGuard
+b74c258 feat: feature engineering pipeline + SHAP explainer integration
+8367cd5 Kaggle Notebook | notebookdbec349673 | Version 2
