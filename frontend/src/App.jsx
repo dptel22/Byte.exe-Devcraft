@@ -2,7 +2,11 @@ import { useState } from 'react';
 import './App.css';
 import VitalsForm from './components/VitalsForm';
 import RiskBadge from './components/RiskBadge';
-import ReferralCard from './components/ReferralCard';
+import ShapReasons from './components/ShapReasons';
+import CounselingScript from './components/CounselingScript';
+import LifestyleCard from './components/LifestyleCard';
+import DangerSigns from './components/DangerSigns';
+import NextVisitCard from './components/NextVisitCard';
 import PatientHistory from './components/PatientHistory';
 
 const EMPTY_FORM_DATA = {
@@ -20,6 +24,22 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showCopyToast, setShowCopyToast] = useState(false);
+
+  const handleCopy = () => {
+    const textToCopy = `🏥 MaternalGuard Screening Alert
+Age: ${formData.age}y | BP: ${formData.systolic_bp}/${formData.diastolic_bp} mmHg
+Glucose: ${formData.blood_glucose} mmol/L | Temp: ${formData.body_temp}°C | HR: ${formData.heart_rate} bpm
+Risk Level: ${result.risk_level}
+Main Flag: ${result.top_shap_feature}
+Action: ${result.referral_urgency}
+Screened: ${new Date().toLocaleString()}`;
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    });
+  };
 
   const handleResult = (data) => {
     setResult(data);
@@ -73,11 +93,36 @@ export default function App() {
               color={result.color}
             />
 
-            <ReferralCard
-              referral={result.referral}
-              color={result.color}
-              reasons={result.reasons}
+            <ShapReasons reasons={result.reasons} />
+            
+            <CounselingScript counselingKey={result.counseling_key} />
+            
+            <LifestyleCard 
+              riskLevel={result.risk_level} 
+              topShapFeature={result.top_shap_feature} 
             />
+            
+            <DangerSigns />
+            
+            <NextVisitCard
+              riskLevel={result.risk_level}
+              referralUrgency={result.referral_urgency}
+              nextVisitDays={result.next_visit_days}
+            />
+
+            <button
+               type="button"
+               style={{ width: '100%', marginBottom: '16px', padding: '12px', borderRadius: '8px', border: '1px solid #ccc', backgroundColor: '#f5f5f5', color: '#333', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}
+               onClick={handleCopy}
+            >
+               📋 Copy Summary for Doctor
+            </button>
+            
+            {showCopyToast && (
+               <div style={{ color: '#2e7d32', textAlign: 'center', marginBottom: '16px', fontWeight: 'bold', fontSize: '1rem', backgroundColor: '#e8f5e9', padding: '8px', borderRadius: '6px' }}>
+                  ✓ Copied!
+               </div>
+            )}
 
             <button
               type="button"

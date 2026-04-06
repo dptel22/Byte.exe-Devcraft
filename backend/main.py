@@ -6,10 +6,35 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
-from model_loader import ModelNotReadyError, model_service
+from model_loader import FEATURE_IDS, ModelNotReadyError, model_service
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+TOP_SHAP_FEATURE_MAP = {
+    "age": "Age",
+    "systolic_bp": "Blood Pressure",
+    "diastolic_bp": "Blood Pressure",
+    "blood_glucose": "Blood Glucose",
+    "body_temp": "Body Temperature",
+    "heart_rate": "Heart Rate",
+    "pulse_pressure": "Blood Pressure",
+    "map": "Blood Pressure",
+    "bp_ratio": "Blood Pressure",
+    "age_glucose": "Blood Glucose",
+}
+
+NEXT_VISIT_DAYS = {
+    "High Risk": 1,
+    "Mid Risk": 2,
+    "Low Risk": 14,
+}
+
+REFERRAL_URGENCY = {
+    "High Risk": "Send to PHC today. Do not wait.",
+    "Mid Risk": "Revisit patient in 48 hours. Re-screen at next visit.",
+    "Low Risk": "Next scheduled visit in 2 weeks. Continue routine monitoring.",
+}
 
 
 class PatientVitals(BaseModel):
@@ -29,11 +54,57 @@ class PredictionResponse(BaseModel):
     color: str
     referral: str
     reasons: List[str]
+    top_shap_feature: str
+    counseling_key: str
+    next_visit_days: int
+    referral_urgency: str
 
 
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool
+
+
+def _get_top_shap_feature(
+    vitals: PatientVitals,
+) -> str:
+    input_array = model_service._build_features(
+        age=vitals.age,
+        systolic_bp=vitals.systolic_bp,
+        diastolic_bp=vitals.diastolic_bp,
+        blood_glucose=vitals.blood_glucose,
+        body_temp=vitals.body_temp,
+        heart_rate=vitals.heart_rate,
+    )
+    probabilities = model_service.model.predict_proba(input_array)[0]
+    class_index = max(
+        range(len(probabilities)),
+        key=lambda index: float(probabilities[index]),
+    )
+    shap_values = model_service.explainer.shap_values(input_array)
+    class_contributions = model_service._extract_class_contributions(
+        shap_values,
+        class_index,
+    )
+    top_feature_index = max(
+        range(len(class_contributions)),
+        key=lambda index: abs(float(class_contributions[index])),
+    )
+    top_feature_id = FEATURE_IDS[top_feature_index]
+    return TOP_SHAP_FEATURE_MAP[top_feature_id]
+
+
+def _build_response_enrichment(
+    vitals: PatientVitals,
+    risk_level: str,
+) -> dict:
+    top_shap_feature = _get_top_shap_feature(vitals)
+    return {
+        "top_shap_feature": top_shap_feature,
+        "counseling_key": f"{risk_level}_{top_shap_feature}",
+        "next_visit_days": NEXT_VISIT_DAYS[risk_level],
+        "referral_urgency": REFERRAL_URGENCY[risk_level],
+    }
 
 
 @asynccontextmanager
@@ -78,6 +149,10 @@ def demo_prediction() -> PredictionResponse:
             "Systolic blood pressure",
             "Patient age",
         ],
+        top_shap_feature="Blood Pressure",
+        counseling_key="High Risk_Blood Pressure",
+        next_visit_days=1,
+        referral_urgency="Send to PHC today. Do not wait.",
     )
 
 
@@ -92,6 +167,7 @@ def predict_risk(vitals: PatientVitals) -> PredictionResponse:
             body_temp=vitals.body_temp,
             heart_rate=vitals.heart_rate,
         )
+        prediction.update(_build_response_enrichment(vitals, prediction["risk_level"]))
     except ModelNotReadyError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
