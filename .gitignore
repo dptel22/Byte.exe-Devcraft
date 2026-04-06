@@ -9,6 +9,11 @@ backend/Lib/
 backend/Scripts/
 backend/Include/
 backend/pyvenv.cfg
+project/backend/venv/
+project/backend/Lib/
+project/backend/Scripts/
+project/backend/Include/
+project/backend/pyvenv.cfg
 
 # Node.js
 node_modules/
@@ -17,6 +22,9 @@ dist-ssr/
 *.local
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
+project/frontend/node_modules/
+project/frontend/dist/
 
 # ML models
 *.pkl
@@ -30,3 +38,5 @@ backend/model/*.pkl
 # OS files
 .DS_Store
 Thumbs.db
+predict_out.json
+project/predict_out.json
