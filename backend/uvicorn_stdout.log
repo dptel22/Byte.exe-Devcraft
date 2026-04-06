@@ -1,0 +1,5 @@
+INFO:     127.0.0.1:54931 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54941 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54948 - "POST /predict HTTP/1.1" 503 Service Unavailable
+INFO:     127.0.0.1:54953 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54955 - "GET /health HTTP/1.1" 200 OK
