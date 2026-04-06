@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import '../App.css';
 
+const API_BASE = 'http://localhost:8000';
+
 const FIELDS = [
   {
     name: 'age',
@@ -8,9 +10,9 @@ const FIELDS = [
     unit: 'years',
     min: 5,
     max: 65,
-    step: 1,
+    step: 0.1,
     placeholder: 'e.g. 28',
-    hint: 'Valid range: 5–65',
+    hint: 'Valid range: 5-65',
   },
   {
     name: 'systolic_bp',
@@ -18,9 +20,9 @@ const FIELDS = [
     unit: 'mmHg',
     min: 70,
     max: 200,
-    step: 1,
+    step: 0.1,
     placeholder: 'e.g. 120',
-    hint: 'Valid range: 70–200',
+    hint: 'Valid range: 70-200',
   },
   {
     name: 'diastolic_bp',
@@ -28,9 +30,9 @@ const FIELDS = [
     unit: 'mmHg',
     min: 40,
     max: 150,
-    step: 1,
+    step: 0.1,
     placeholder: 'e.g. 80',
-    hint: 'Valid range: 40–150',
+    hint: 'Valid range: 40-150',
   },
   {
     name: 'blood_glucose',
@@ -40,17 +42,17 @@ const FIELDS = [
     max: 20,
     step: 0.1,
     placeholder: 'e.g. 7.5',
-    hint: 'Valid range: 6–20',
+    hint: 'Valid range: 6-20',
   },
   {
     name: 'body_temp',
-    label: 'Body Temperature',
-    unit: '°C',
+    label: 'Body Temp',
+    unit: 'C',
     min: 35,
     max: 42,
     step: 0.1,
     placeholder: 'e.g. 37.0',
-    hint: 'Valid range: 35–42',
+    hint: 'Valid range: 35-42',
   },
   {
     name: 'heart_rate',
@@ -58,70 +60,104 @@ const FIELDS = [
     unit: 'bpm',
     min: 40,
     max: 150,
-    step: 1,
+    step: 0.1,
     placeholder: 'e.g. 75',
-    hint: 'Valid range: 40–150',
+    hint: 'Valid range: 40-150',
   },
 ];
 
-const emptyForm = () =>
-  Object.fromEntries(FIELDS.map((f) => [f.name, '']));
-
 const emptyErrors = () =>
-  Object.fromEntries(FIELDS.map((f) => [f.name, '']));
+  Object.fromEntries(FIELDS.map((field) => [field.name, '']));
 
-export default function VitalsForm({ onSubmit, isLoading }) {
-  const [values, setValues] = useState(emptyForm());
+export default function VitalsForm({
+  formData,
+  onFormDataChange,
+  onResult,
+  onError,
+  isLoading,
+  onLoadingChange,
+}) {
   const [errors, setErrors] = useState(emptyErrors());
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
-    // Clear error on change
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    onFormDataChange((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
-    const newErrors = emptyErrors();
-    let valid = true;
+    const nextErrors = emptyErrors();
+    let isValid = true;
 
     for (const field of FIELDS) {
-      const raw = values[field.name];
-      if (raw === '' || raw === null || raw === undefined) {
-        newErrors[field.name] = 'This field is required.';
-        valid = false;
+      const rawValue = formData[field.name];
+      if (rawValue === '' || rawValue === null || rawValue === undefined) {
+        nextErrors[field.name] = 'This field is required.';
+        isValid = false;
         continue;
       }
-      const num = parseFloat(raw);
-      if (isNaN(num)) {
-        newErrors[field.name] = 'Enter a valid number.';
-        valid = false;
+
+      const numericValue = parseFloat(rawValue);
+      if (Number.isNaN(numericValue)) {
+        nextErrors[field.name] = 'Enter a valid number.';
+        isValid = false;
         continue;
       }
-      if (num < field.min || num > field.max) {
-        newErrors[field.name] = `Must be between ${field.min} and ${field.max}.`;
-        valid = false;
+
+      if (numericValue < field.min || numericValue > field.max) {
+        nextErrors[field.name] = `Must be between ${field.min} and ${field.max}.`;
+        isValid = false;
       }
     }
 
-    setErrors(newErrors);
-    return valid;
+    setErrors(nextErrors);
+    return isValid;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!validate()) {
+      return;
+    }
 
     const payload = {
-      age: parseInt(values.age, 10),
-      systolic_bp: parseInt(values.systolic_bp, 10),
-      diastolic_bp: parseInt(values.diastolic_bp, 10),
-      blood_glucose: parseFloat(values.blood_glucose),
-      body_temp: parseFloat(values.body_temp),
-      heart_rate: parseInt(values.heart_rate, 10),
+      age: parseFloat(formData.age),
+      systolic_bp: parseFloat(formData.systolic_bp),
+      diastolic_bp: parseFloat(formData.diastolic_bp),
+      blood_glucose: parseFloat(formData.blood_glucose),
+      body_temp: parseFloat(formData.body_temp),
+      heart_rate: parseFloat(formData.heart_rate),
     };
 
-    onSubmit(payload);
+    onLoadingChange(true);
+    onError(null);
+
+    try {
+      const response = await fetch(`${API_BASE}/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('Backend error:', response.status, data);
+        onError(
+          `Server error ${response.status}: ${
+            data?.detail || data?.message || JSON.stringify(data)
+          }`
+        );
+        return;
+      }
+
+      onResult(data);
+    } catch (error) {
+      console.error('Network error:', error);
+      onError('Cannot connect to backend. Is the server running on port 8000?');
+    } finally {
+      onLoadingChange(false);
+    }
   };
 
   return (
@@ -143,12 +179,13 @@ export default function VitalsForm({ onSubmit, isLoading }) {
                   id={`field-${field.name}`}
                   type="number"
                   name={field.name}
-                  value={values[field.name]}
+                  value={formData[field.name]}
                   onChange={handleChange}
                   placeholder={field.placeholder}
                   step={field.step}
                   className={`field-input${errors[field.name] ? ' input-error' : ''}`}
                   autoComplete="off"
+                  disabled={isLoading}
                 />
                 <span className="field-unit">{field.unit}</span>
               </div>
@@ -167,7 +204,7 @@ export default function VitalsForm({ onSubmit, isLoading }) {
           disabled={isLoading}
           id="assess-risk-btn"
         >
-          {isLoading ? 'Analysing…' : 'Assess Risk'}
+          {isLoading ? 'Analysing...' : 'Assess Risk'}
         </button>
       </form>
     </div>

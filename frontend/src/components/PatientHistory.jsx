@@ -1,9 +1,9 @@
 import '../App.css';
 
 const PILL_CLASS = {
-  High: 'risk-high',
-  Mid: 'risk-mid',
-  Low: 'risk-low',
+  'High Risk': 'risk-high',
+  'Mid Risk': 'risk-mid',
+  'Low Risk': 'risk-low',
 };
 
 function formatTime(isoString) {
@@ -13,7 +13,7 @@ function formatTime(isoString) {
       minute: '2-digit',
     });
   } catch {
-    return '—';
+    return '-';
   }
 }
 
@@ -38,22 +38,23 @@ export default function PatientHistory({ history }) {
         <table className="history-table">
           <thead>
             <tr>
-              <th>#</th>
               <th>Age</th>
-              <th>Systolic BP</th>
-              <th>Blood Glucose</th>
+              <th>SBP</th>
+              <th>DBP</th>
+              <th>Glucose</th>
               <th>Risk Level</th>
               <th>Time</th>
             </tr>
           </thead>
           <tbody>
-            {history.map((entry, idx) => {
+            {history.map((entry, index) => {
               const pillClass = PILL_CLASS[entry.risk_level] ?? 'risk-low';
+
               return (
-                <tr key={idx}>
-                  <td>{idx + 1}</td>
+                <tr key={index}>
                   <td>{entry.age}</td>
                   <td>{entry.systolic_bp}</td>
+                  <td>{entry.diastolic_bp}</td>
                   <td>{entry.blood_glucose}</td>
                   <td>
                     <span className={`risk-pill ${pillClass}`}>

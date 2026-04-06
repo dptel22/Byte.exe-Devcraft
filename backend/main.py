@@ -4,7 +4,7 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from model_loader import ModelNotReadyError, model_service
 
@@ -13,50 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 class PatientVitals(BaseModel):
-    """
-    Accepts both PascalCase (Age) and snake_case (age) field names.
-    Pydantic rejects requests outside the validated ranges with HTTP 422.
-    """
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(extra="forbid")
 
-    Age: int = Field(
-        ge=5, le=65,
-        validation_alias=AliasChoices("Age", "age"),
-        description="Patient age in years (5–65)",
-    )
-    SystolicBP: int = Field(
-        ge=70, le=200,
-        validation_alias=AliasChoices("SystolicBP", "systolic_bp"),
-        description="Systolic blood pressure mmHg (70–200)",
-    )
-    DiastolicBP: int = Field(
-        ge=40, le=150,
-        validation_alias=AliasChoices("DiastolicBP", "diastolic_bp"),
-        description="Diastolic blood pressure mmHg (40–150)",
-    )
-    BloodGlucose: float = Field(
-        ge=6.0, le=20.0,
-        validation_alias=AliasChoices("BloodGlucose", "blood_glucose"),
-        description="Blood glucose mmol/L (6–20)",
-    )
-    BodyTemp: float = Field(
-        ge=35.0, le=42.0,
-        validation_alias=AliasChoices("BodyTemp", "body_temp"),
-        description="Body temperature °C (35–42)",
-    )
-    HeartRate: int = Field(
-        ge=40, le=150,
-        validation_alias=AliasChoices("HeartRate", "heart_rate"),
-        description="Heart rate bpm (40–150)",
-    )
+    age: float = Field(description="Patient age")
+    systolic_bp: float = Field(description="Systolic blood pressure")
+    diastolic_bp: float = Field(description="Diastolic blood pressure")
+    blood_glucose: float = Field(description="Blood glucose level")
+    body_temp: float = Field(description="Body temperature")
+    heart_rate: float = Field(description="Heart rate")
 
 
 class PredictionResponse(BaseModel):
     risk_level: str
     confidence: float
-    top_reasons: List[str]
+    color: str
     referral: str
-    referral_color: str
+    reasons: List[str]
 
 
 class HealthResponse(BaseModel):
@@ -68,9 +40,9 @@ class HealthResponse(BaseModel):
 async def lifespan(_: FastAPI):
     loaded = model_service.load_model()
     if loaded:
-        logger.info("MaternalGuard: model artifacts loaded — /predict is live")
+        logger.info("MaternalGuard: model and SHAP explainer loaded successfully")
     else:
-        logger.warning("MaternalGuard: model artifacts NOT found — /predict will return 503")
+        logger.warning("MaternalGuard: model artifacts not ready; /predict will return 503")
     yield
 
 
@@ -82,7 +54,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -97,15 +69,15 @@ def health_check() -> HealthResponse:
 @app.get("/demo", response_model=PredictionResponse)
 def demo_prediction() -> PredictionResponse:
     return PredictionResponse(
-        risk_level="High",
+        risk_level="High Risk",
         confidence=0.87,
-        top_reasons=[
-            "Blood glucose is critically elevated",
-            "Systolic BP above safe threshold",
-            "Age is a contributing risk factor",
-        ],
+        color="red",
         referral="Send to PHC immediately",
-        referral_color="red",
+        reasons=[
+            "Blood glucose level",
+            "Systolic blood pressure",
+            "Patient age",
+        ],
     )
 
 
@@ -113,12 +85,12 @@ def demo_prediction() -> PredictionResponse:
 def predict_risk(vitals: PatientVitals) -> PredictionResponse:
     try:
         prediction = model_service.predict(
-            age=vitals.Age,
-            systolic_bp=vitals.SystolicBP,
-            diastolic_bp=vitals.DiastolicBP,
-            blood_glucose=vitals.BloodGlucose,
-            body_temp=vitals.BodyTemp,
-            heart_rate=vitals.HeartRate,
+            age=vitals.age,
+            systolic_bp=vitals.systolic_bp,
+            diastolic_bp=vitals.diastolic_bp,
+            blood_glucose=vitals.blood_glucose,
+            body_temp=vitals.body_temp,
+            heart_rate=vitals.heart_rate,
         )
     except ModelNotReadyError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
