@@ -2,13 +2,13 @@ import React from 'react';
 
 const SCRIPTS = {
   "High Risk_Blood Pressure":
-    "Didi, your blood pressure is very high right now. This is dangerous for you and your baby. You must go to the PHC today — do not wait. Stop eating salt completely. Avoid pickles and packaged food. Rest lying on your left side. If you get a headache or see blurry, call me immediately.",
+    "Didi, your blood pressure is very high right now. This is dangerous for you and your baby. You must go to the PHC today - do not wait. Stop eating salt completely. Avoid pickles and packaged food. Rest lying on your left side. If you get a headache or see blurry, call me immediately.",
 
   "High Risk_Blood Glucose":
     "Didi, your sugar level is very high. This can harm your baby if not controlled. Avoid rice, roti, sweets, fruit juice, and tea with sugar today. Eat only dal, sabzi, and eggs. Drink 3 glasses of water now. Go to PHC within 24 hours.",
 
   "High Risk_Body Temperature":
-    "Didi, you have a fever right now. This is not safe during pregnancy. Put a wet cloth on your forehead. Drink water every 30 minutes. Take paracetamol only if temp is above 38.5°C. Go to PHC today.",
+    "Didi, you have a fever right now. This is not safe during pregnancy. Put a wet cloth on your forehead. Drink water every 30 minutes. Take paracetamol only if temp is above 38.5 C. Go to PHC today.",
 
   "High Risk_Heart Rate":
     "Didi, your heart is beating very fast. Sit down immediately and rest. Do not do any work or walk around. Breathe slowly. I will check again in 10 minutes. If it does not come down, we go to PHC now.",
@@ -17,7 +17,7 @@ const SCRIPTS = {
     "Didi, at your age this pregnancy needs extra care. All your vitals together show high risk. You must see the PHC doctor this week. Rest as much as possible and do not miss your next checkup.",
 
   "Mid Risk_Blood Pressure":
-    "Didi, your blood pressure is a little high today. Please rest at home today — no heavy work. Do not add salt to your food. I will come back in 2 days to check again. If you feel a headache or swelling in hands or face, call me immediately.",
+    "Didi, your blood pressure is a little high today. Please rest at home today - no heavy work. Do not add salt to your food. I will come back in 2 days to check again. If you feel a headache or swelling in hands or face, call me immediately.",
 
   "Mid Risk_Blood Glucose":
     "Didi, your sugar is a little high. Try to eat less rice and sweets for the next 2 days. Eat small meals more often. I will check your sugar again when I visit next. If you feel dizzy, drink a glass of plain water and rest.",
@@ -53,20 +53,20 @@ export default function CounselingScript({ counselingKey }) {
   const scriptText = SCRIPTS[counselingKey] || DEFAULT_SCRIPT;
 
   return (
-    <div 
-        style={{
-            backgroundColor: '#fffbea',
-            border: '2px solid #f5c842',
-            borderRadius: '10px',
-            padding: '16px 20px',
-            marginBottom: '16px',
-            width: '100%',
-            maxWidth: '600px',
-            boxSizing: 'border-box'
-        }}
+    <div
+      style={{
+        backgroundColor: '#fffbea',
+        border: '2px solid #f5c842',
+        borderRadius: '10px',
+        padding: '16px 20px',
+        marginBottom: '16px',
+        width: '100%',
+        maxWidth: '600px',
+        boxSizing: 'border-box'
+      }}
     >
       <h3 style={{ margin: '0 0 4px 0', color: '#333', fontSize: '1.1rem' }}>
-        📢 What to tell the patient:
+        What to tell the patient:
       </h3>
       <p style={{ margin: '0 0 12px 0', color: '#666', fontSize: '0.85rem', fontStyle: 'italic' }}>
         Read this out loud to her.

@@ -111,14 +111,14 @@ def _build_response_enrichment(
 async def lifespan(_: FastAPI):
     loaded = model_service.load_model()
     if loaded:
-        logger.info("MaternalGuard: model and SHAP explainer loaded successfully")
+        logger.info("VitaSakhi: model and SHAP explainer loaded successfully")
     else:
-        logger.warning("MaternalGuard: model artifacts not ready; /predict will return 503")
+        logger.warning("VitaSakhi: model artifacts not ready; /predict will return 503")
     yield
 
 
 app = FastAPI(
-    title="MaternalGuard API",
+    title="VitaSakhi API",
     description="AI-powered maternal health risk screener for ASHA workers",
     lifespan=lifespan,
 )

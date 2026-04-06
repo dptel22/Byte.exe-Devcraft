@@ -1,4 +1,4 @@
-# MaternalGuard Backend
+# VitaSakhi Backend
 
 FastAPI service for maternal health risk prediction.
 
@@ -28,6 +28,6 @@ The API will be available at [http://localhost:8000](http://localhost:8000).
 Check the interactive documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## Prediction Logic
-ML logic is located in `predict_risk` endpoint in `main.py`. 
+ML logic is located in `predict_risk` endpoint in `main.py`.
 Models should be stored in the `model/` directory.
 Prediction inputs: Age, SystolicBP, DiastolicBP, BloodGlucose, BodyTemp, HeartRate.

@@ -27,9 +27,9 @@ export default function App() {
   const [showCopyToast, setShowCopyToast] = useState(false);
 
   const handleCopy = () => {
-    const textToCopy = `🏥 MaternalGuard Screening Alert
+    const textToCopy = `VitaSakhi Screening Alert
 Age: ${formData.age}y | BP: ${formData.systolic_bp}/${formData.diastolic_bp} mmHg
-Glucose: ${formData.blood_glucose} mmol/L | Temp: ${formData.body_temp}°C | HR: ${formData.heart_rate} bpm
+Glucose: ${formData.blood_glucose} mmol/L | Temp: ${formData.body_temp} C | HR: ${formData.heart_rate} bpm
 Risk Level: ${result.risk_level}
 Main Flag: ${result.top_shap_feature}
 Action: ${result.referral_urgency}
@@ -65,7 +65,7 @@ Screened: ${new Date().toLocaleString()}`;
   return (
     <div className="app-shell">
       <header className="app-header">
-        <span className="header-brand">MaternalGuard</span>
+        <span className="header-brand">VitaSakhi</span>
         <span className="header-subtitle">ASHA Clinical Decision Support</span>
       </header>
 
@@ -94,16 +94,16 @@ Screened: ${new Date().toLocaleString()}`;
             />
 
             <ShapReasons reasons={result.reasons} />
-            
+
             <CounselingScript counselingKey={result.counseling_key} />
-            
-            <LifestyleCard 
-              riskLevel={result.risk_level} 
-              topShapFeature={result.top_shap_feature} 
+
+            <LifestyleCard
+              riskLevel={result.risk_level}
+              topShapFeature={result.top_shap_feature}
             />
-            
+
             <DangerSigns />
-            
+
             <NextVisitCard
               riskLevel={result.risk_level}
               referralUrgency={result.referral_urgency}
@@ -111,17 +111,39 @@ Screened: ${new Date().toLocaleString()}`;
             />
 
             <button
-               type="button"
-               style={{ width: '100%', marginBottom: '16px', padding: '12px', borderRadius: '8px', border: '1px solid #ccc', backgroundColor: '#f5f5f5', color: '#333', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}
-               onClick={handleCopy}
+              type="button"
+              style={{
+                width: '100%',
+                marginBottom: '16px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid #ccc',
+                backgroundColor: '#f5f5f5',
+                color: '#333',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '1rem',
+              }}
+              onClick={handleCopy}
             >
-               📋 Copy Summary for Doctor
+              Copy Summary for Doctor
             </button>
-            
+
             {showCopyToast && (
-               <div style={{ color: '#2e7d32', textAlign: 'center', marginBottom: '16px', fontWeight: 'bold', fontSize: '1rem', backgroundColor: '#e8f5e9', padding: '8px', borderRadius: '6px' }}>
-                  ✓ Copied!
-               </div>
+              <div
+                style={{
+                  color: '#2e7d32',
+                  textAlign: 'center',
+                  marginBottom: '16px',
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  backgroundColor: '#e8f5e9',
+                  padding: '8px',
+                  borderRadius: '6px',
+                }}
+              >
+                Copied!
+              </div>
             )}
 
             <button
@@ -135,7 +157,15 @@ Screened: ${new Date().toLocaleString()}`;
           </div>
         )}
 
-        <div style={{ marginTop: '24px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div
+          style={{
+            marginTop: '24px',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <PatientHistory history={history} />
         </div>
       </main>

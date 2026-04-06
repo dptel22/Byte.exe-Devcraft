@@ -1,4 +1,4 @@
-# MaternalGuard Frontend
+# VitaSakhi Frontend
 
 React application for maternal health risk screening. Built with Vite.
 
@@ -23,7 +23,7 @@ React application for maternal health risk screening. Built with Vite.
 - `components/ReferralCard.jsx`: Shows if referral is needed and why (SHAP reasons).
 - `components/PatientHistory.jsx`: Future table for patient records.
 
-**Note for Developers:** 
-- The form currently sends real-time POST requests to `http://localhost:8000/predict`. 
+**Note for Developers:**
+- The form currently sends real-time POST requests to `http://localhost:8000/predict`.
 - Ensure the backend is running before testing the screening functionality.
 - UI styling is minimal; please apply the design system here.
