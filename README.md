@@ -1,247 +1,210 @@
-# Byte.exe Hackathon Submission
+# 🩺 Byte.exe — Maternal Health Risk Screener
 
-This repository is arranged in the requested hackathon format:
+> **🏆 3rd Place — DevCraft Hackathon 2026**
 
-```text
-project-name/
-|
-|-- README.md
-|-- Byte.exe.pptx
-|
-`-- project/
-    |-- backend/
-    |-- frontend/
-    |-- design/
-    `-- notebookdbec349673
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi)
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?logo=react)
+![ML](https://img.shields.io/badge/Model-XGBoost%20%2B%20SHAP-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+A clinical decision-support web application that screens maternal health risk using 6 vital inputs and returns an interpretable risk classification with SHAP-based explanations and referral guidance — designed for use in low-resource healthcare settings.
+
+---
+
+## 📋 Table of Contents
+
+- [Problem Statement](#problem-statement)
+- [Solution Overview](#solution-overview)
+- [Features](#features)
+- [System Architecture](#system-architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [API Reference](#api-reference)
+- [User Stories](#user-stories)
+- [ML Model Details](#ml-model-details)
+- [Troubleshooting](#troubleshooting)
+- [Team](#team)
+
+---
+
+## Problem Statement
+
+Maternal mortality remains a critical public health crisis, particularly in under-resourced regions where clinicians lack fast, reliable tools to assess patient risk during prenatal and postnatal care. Delays in identifying high-risk patients lead to preventable deaths.
+
+---
+
+## Solution Overview
+
+Byte.exe is a lightweight, stateless web application that:
+
+1. Accepts 6 standard maternal health vitals as input
+2. Runs inference using a trained XGBoost classifier
+3. Returns a **risk level** (Low / Mid / High) with a **confidence score**
+4. Explains the prediction using **SHAP values** mapped to plain clinical language
+5. Provides **referral guidance** and follow-up timing based on risk level
+
+No database. No external API calls. Fully local-deployable for offline clinic use.
+
+---
+
+## Features
+
+- ✅ **Risk Classification** — Low / Mid / High with confidence score
+- ✅ **SHAP Explainability** — Top contributing vitals explained in plain language
+- ✅ **Referral Guidance** — Actionable clinical next steps based on risk level
+- ✅ **Fast Inference** — Sub-second response via FastAPI
+- ✅ **Stateless & Private** — No patient data stored or transmitted
+- ✅ **Swagger API Docs** — Auto-generated at `/docs`
+
+---
+
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   USER (Clinician)                  │
+│             Enters 6 vitals in React UI             │
+└───────────────────────────┬─────────────────────────┘
+                            │ HTTP POST /predict
+                            ▼
+┌─────────────────────────────────────────────────────┐
+│              FastAPI Backend (Port 8000)            │
+│  ┌──────────────┐    ┌──────────────────────────┐   │
+│  │ Input Parser │───▶│   XGBoost Classifier     │   │
+│  └──────────────┘    └────────────┬─────────────┘   │
+│                                   │                  │
+│                      ┌────────────▼─────────────┐   │
+│                      │   SHAP Explainer         │   │
+│                      └────────────┬─────────────┘   │
+│                                   │                  │
+│                      ┌────────────▼─────────────┐   │
+│                      │  Referral Logic Engine   │   │
+│                      └────────────┬─────────────┘   │
+└────────────────────────────────────┬────────────────┘
+                        │ JSON Response
+                        ▼
+┌─────────────────────────────────────────────────────┐
+│           React + Vite Frontend (Port 5173)         │
+│   Displays: Risk Level | SHAP Reasons | Referral    │
+└─────────────────────────────────────────────────────┘
 ```
 
-## Project Overview
-
-This project is a maternal health risk screening web application built for hackathon evaluation. The app helps screen a patient using 6 vital inputs and returns a risk prediction with clinical guidance.
-
-Main capabilities:
-
-- collects 6 maternal health vitals
-- predicts risk level using a trained ML model
-- explains the result using SHAP-based reasons
-- shows referral guidance and follow-up timing
-- runs fully on localhost with no database and no external APIs
-
-## Submission Files
-
-- `README.md`
-  Project explanation, setup guide, required modules, and detailed run steps.
-
-- `Byte.exe.pptx`
-  Hackathon presentation deck.
-
-- `project/`
-  Actual implementation and supporting project files.
-
-## Inside `project/`
-
-- `project/backend/`
-  FastAPI backend for inference and API endpoints.
-
-- `project/frontend/`
-  React + Vite frontend for the screening UI.
-
-- `project/design/`
-  Design and HTML artifact files used during project development.
-
-- `project/notebookdbec349673`
-  Training notebook artifact.
+---
 
 ## Tech Stack
 
-- Frontend: React, Vite
-- Backend: FastAPI
-- ML: XGBoost, SHAP
-- Language: Python, JavaScript
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, Vite, JavaScript |
+| Backend | Python 3.11, FastAPI, Uvicorn |
+| ML Model | XGBoost, scikit-learn |
+| Explainability | SHAP |
+| Data Processing | pandas, NumPy |
+| API Docs | Swagger UI (auto via FastAPI) |
 
-## Requirements
+---
 
-### System Requirements
+## Project Structure
 
-- Windows PowerShell
-- Python 3.11 recommended
-- Node.js 18 or newer
-- npm
-
-### Backend Python Dependencies
-
-These are required for the backend and are installed from `project/backend/requirements.txt`:
-
-- `fastapi`
-- `uvicorn`
-- `xgboost`
-- `shap`
-- `pandas`
-- `scikit-learn`
-- `numpy`
-- `requests`
-
-### Frontend Node Dependencies
-
-Installed from `project/frontend/package.json`:
-
-- Runtime:
-  - `react`
-  - `react-dom`
-- Development:
-  - `vite`
-  - `@vitejs/plugin-react`
-  - `eslint`
-  - `@eslint/js`
-  - `eslint-plugin-react-hooks`
-  - `eslint-plugin-react-refresh`
-  - `globals`
-  - `@types/react`
-  - `@types/react-dom`
-
-## How To Run The Application
-
-Use 2 terminals:
-
-1. one terminal for the backend
-2. one terminal for the frontend
-
-Start the backend first, then start the frontend.
-
-## Backend Setup
-
-Open PowerShell in the repository root:
-
-```powershell
-cd C:\Users\dhruv\PycharmProjects\Devcraft
+```text
+Byte.exe-Devcraft/
+├── README.md
+├── Byte.exe.pptx              # Hackathon presentation deck
+└── project/
+    ├── backend/               # FastAPI inference server
+    │   ├── main.py            # API entry point
+    │   ├── model/             # Trained XGBoost model artifacts
+    │   ├── requirements.txt   # Python dependencies
+    │   └── shap_utils.py      # SHAP explanation logic
+    ├── frontend/              # React + Vite UI
+    │   ├── src/
+    │   ├── public/
+    │   └── package.json
+    ├── design/                # UI mockups and HTML prototypes
+    └── notebookdbec349673     # Model training notebook
 ```
 
-Move into the backend:
+---
 
-```powershell
-cd .\project\backend
+## Getting Started
+
+### Prerequisites
+
+| Tool | Version |
+|------|---------|
+| Python | 3.11+ |
+| Node.js | 18+ |
+| npm | 9+ |
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/dptel22/Byte.exe-Devcraft.git
+cd Byte.exe-Devcraft
 ```
 
-Create a virtual environment if needed:
+### 2. Start the Backend
 
-```powershell
-py -3.11 -m venv .
-```
+```bash
+# Navigate to backend
+cd project/backend
 
-Activate the virtual environment:
+# Create and activate virtual environment
+python -m venv venv
 
-```powershell
-.\Scripts\Activate.ps1
-```
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
-If PowerShell blocks activation, run:
-
-```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-.\Scripts\Activate.ps1
-```
-
-Install backend dependencies:
-
-```powershell
+# Install dependencies
 pip install -r requirements.txt
-```
 
-Start the FastAPI server:
-
-```powershell
+# Start the server
 uvicorn main:app --reload --port 8000
 ```
 
-If `uvicorn` is not recognized, use:
+Verify at: [http://localhost:8000/health](http://localhost:8000/health)
 
-```powershell
-python -m uvicorn main:app --reload --port 8000
-```
-
-### Backend Verification
-
-Open:
-
-- [http://localhost:8000/health](http://localhost:8000/health)
-- [http://localhost:8000/docs](http://localhost:8000/docs)
-
-Expected health response:
-
+Expected response:
 ```json
-{
-  "status": "ok",
-  "model_loaded": true
-}
+{ "status": "ok", "model_loaded": true }
 ```
 
-## Frontend Setup
+Swagger docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-Open a second PowerShell window and run:
+### 3. Start the Frontend
 
-```powershell
-cd C:\Users\dhruv\PycharmProjects\Devcraft\project\frontend
-```
+Open a **new terminal**:
 
-Install frontend dependencies:
-
-```powershell
-npm install
-```
-
-Start the frontend:
-
-```powershell
-npm run dev
-```
-
-Open the app in your browser:
-
-- [http://localhost:5173](http://localhost:5173)
-
-## Full Run Order
-
-### Terminal 1
-
-```powershell
-cd C:\Users\dhruv\PycharmProjects\Devcraft\project\backend
-.\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-
-### Terminal 2
-
-```powershell
-cd C:\Users\dhruv\PycharmProjects\Devcraft\project\frontend
+```bash
+cd project/frontend
 npm install
 npm run dev
 ```
 
-Then open:
+Open the app at: [http://localhost:5173](http://localhost:5173)
 
-- [http://localhost:5173](http://localhost:5173)
+---
 
-## API Summary
+## API Reference
 
-Backend endpoints:
+### `GET /health`
+Returns backend and model status.
 
-- `GET /health`
-  Health check
+**Response:**
+```json
+{ "status": "ok", "model_loaded": true }
+```
 
-- `GET /docs`
-  Swagger API docs
+---
 
-- `GET /demo`
-  Demo response
+### `POST /predict`
+Predicts maternal health risk from 6 vitals.
 
-- `POST /predict`
-  Predicts maternal health risk from 6 vitals
-
-## Input Expected By The Backend
-
-Example request body:
-
+**Request Body:**
 ```json
 {
   "age": 28,
@@ -253,51 +216,85 @@ Example request body:
 }
 ```
 
+**Input Fields:**
+
+| Field | Type | Unit | Description |
+|-------|------|------|-------------|
+| `age` | int | years | Patient age |
+| `systolic_bp` | float | mmHg | Systolic blood pressure |
+| `diastolic_bp` | float | mmHg | Diastolic blood pressure |
+| `blood_glucose` | float | mmol/L | Blood glucose level |
+| `body_temp` | float | °C | Body temperature |
+| `heart_rate` | int | bpm | Resting heart rate |
+
+**Response:**
+```json
+{
+  "risk_level": "High",
+  "confidence": 0.87,
+  "shap_reasons": [
+    "Elevated blood glucose is the primary risk driver",
+    "High systolic blood pressure is a contributing factor"
+  ],
+  "referral_guidance": "Immediate referral to obstetric specialist recommended.",
+  "follow_up": "Within 24 hours"
+}
+```
+
+---
+
+### `GET /demo`
+Returns a sample prediction response for UI testing.
+
+---
+
+## User Stories
+
+> These are the functional requirements captured as user stories, useful for SRS documentation.
+
+| ID | As a... | I want to... | So that... |
+|----|---------|--------------|------------|
+| US-01 | Clinician | Enter 6 patient vitals | I can receive an automated risk assessment |
+| US-02 | Clinician | See a SHAP explanation | I understand which vitals are driving the risk |
+| US-03 | Clinician | Receive referral guidance | I know what action to take immediately |
+| US-04 | Clinic admin | Run the app without internet | It works in offline/low-resource settings |
+| US-05 | Developer | Access Swagger docs | I can test and integrate the API easily |
+
+---
+
+## ML Model Details
+
+| Property | Value |
+|----------|-------|
+| Algorithm | XGBoost Classifier |
+| Target Classes | Low Risk, Mid Risk, High Risk |
+| Input Features | Age, Systolic BP, Diastolic BP, Blood Glucose, Body Temp, Heart Rate |
+| Explainability | SHAP TreeExplainer |
+| Dataset | UCI Maternal Health Risk Dataset |
+| Training Environment | Jupyter Notebook (see `project/notebookdbec349673`) |
+
+---
+
 ## Troubleshooting
 
-### Python not found
+| Issue | Fix |
+|-------|-----|
+| `uvicorn` not found | Use `python -m uvicorn main:app --reload --port 8000` |
+| PowerShell blocks venv activation | Run `Set-ExecutionPolicy -Scope Process Bypass` first |
+| Frontend can't connect to backend | Confirm backend is running on port 8000 and health check returns `model_loaded: true` |
+| Port already in use | Kill the process using the port, then restart |
+| `python` not recognized | Use `py -3.11` instead of `python` on Windows |
 
-Use:
+---
 
-```powershell
-py -3.11 -m venv .
-```
+## Team
 
-### Backend does not start
+**Team Byte.exe** — DevCraft Hackathon 2026 · 🥉 3rd Place
 
-Make sure you are inside:
+| Name | Role |
+|------|------|
+| Dhruv Patel | ML Engineer, Backend, Full-Stack |
 
-```powershell
-cd C:\Users\dhruv\PycharmProjects\Devcraft\project\backend
-```
+---
 
-Then reinstall dependencies:
-
-```powershell
-.\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-### Frontend cannot connect to backend
-
-Check:
-
-- backend is running on `http://localhost:8000`
-- frontend is running on `http://localhost:5173`
-- `http://localhost:8000/health` returns `model_loaded: true`
-
-### Port already in use
-
-Close the process already using the port and restart:
-
-```powershell
-uvicorn main:app --reload --port 8000
-```
-
-## Submission Note
-
-Before final hackathon submission:
-
-- keep the repository public
-- make sure the repository name matches the registered team name
-- keep `README.md`, `Byte.exe.pptx`, and `project/` at the repository root
+> Built for the DevCraft Hackathon. Designed to be deployable in under 5 minutes on any machine with Python and Node.js.
