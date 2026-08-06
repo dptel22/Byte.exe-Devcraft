@@ -19,50 +19,50 @@ const FIELDS = [
     label: 'Systolic BP',
     unit: 'mmHg',
     min: 70,
-    max: 200,
+    max: 160,
     step: 0.1,
     placeholder: 'e.g. 120',
-    hint: 'Valid range: 70-200',
+    hint: 'Valid range: 70-160',
   },
   {
     name: 'diastolic_bp',
     label: 'Diastolic BP',
     unit: 'mmHg',
-    min: 40,
-    max: 150,
+    min: 49,
+    max: 100,
     step: 0.1,
     placeholder: 'e.g. 80',
-    hint: 'Valid range: 40-150',
+    hint: 'Valid range: 49-100',
   },
   {
     name: 'blood_glucose',
     label: 'Blood Glucose',
     unit: 'mmol/L',
-    min: 6,
-    max: 20,
+    min: 6.0,
+    max: 19.0,
     step: 0.1,
     placeholder: 'e.g. 7.5',
-    hint: 'Valid range: 6-20',
+    hint: 'Valid range: 6.0-19.0',
   },
   {
     name: 'body_temp',
     label: 'Body Temp',
-    unit: 'C',
-    min: 35,
-    max: 42,
+    unit: '°F',
+    min: 98,
+    max: 103,
     step: 0.1,
-    placeholder: 'e.g. 37.0',
-    hint: 'Valid range: 35-42',
+    placeholder: 'e.g. 98.6',
+    hint: 'Valid range: 98-103°F',
   },
   {
     name: 'heart_rate',
     label: 'Heart Rate',
     unit: 'bpm',
     min: 40,
-    max: 150,
+    max: 90,
     step: 0.1,
     placeholder: 'e.g. 75',
-    hint: 'Valid range: 40-150',
+    hint: 'Valid range: 40-90',
   },
 ];
 
@@ -174,7 +174,7 @@ export default function VitalsForm({
               <label className="field-label" htmlFor={`field-${field.name}`}>
                 {field.label}
               </label>
-              <div className="field-input-row">
+              <div className={`field-input-row${errors[field.name] ? ' has-error' : ''}`}>
                 <input
                   id={`field-${field.name}`}
                   type="number"
@@ -183,7 +183,7 @@ export default function VitalsForm({
                   onChange={handleChange}
                   placeholder={field.placeholder}
                   step={field.step}
-                  className={`field-input${errors[field.name] ? ' input-error' : ''}`}
+                  className="field-input"
                   autoComplete="off"
                   disabled={isLoading}
                 />

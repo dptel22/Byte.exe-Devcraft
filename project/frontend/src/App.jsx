@@ -29,7 +29,7 @@ export default function App() {
   const handleCopy = () => {
     const textToCopy = `VitaSakhi Screening Alert
 Age: ${formData.age}y | BP: ${formData.systolic_bp}/${formData.diastolic_bp} mmHg
-Glucose: ${formData.blood_glucose} mmol/L | Temp: ${formData.body_temp} C | HR: ${formData.heart_rate} bpm
+Glucose: ${formData.blood_glucose} mmol/L | Temp: ${formData.body_temp}°F | HR: ${formData.heart_rate} bpm
 Risk Level: ${result.risk_level}
 Main Flag: ${result.top_shap_feature}
 Action: ${result.referral_urgency}
@@ -93,7 +93,7 @@ Screened: ${new Date().toLocaleString()}`;
               color={result.color}
             />
 
-            <ShapReasons reasons={result.reasons} />
+            <ShapReasons reasons={result.top_reasons} />
 
             <CounselingScript counselingKey={result.counseling_key} />
 
@@ -114,35 +114,41 @@ Screened: ${new Date().toLocaleString()}`;
               type="button"
               style={{
                 width: '100%',
-                marginBottom: '16px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #ccc',
-                backgroundColor: '#f5f5f5',
-                color: '#333',
-                fontWeight: 'bold',
+                maxWidth: '580px',
+                marginBottom: '10px',
+                padding: '13px',
+                borderRadius: '10px',
+                border: '1.5px solid #e2e8f0',
+                backgroundColor: '#f8fafc',
+                color: '#475569',
+                fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: '1rem',
+                fontSize: '14px',
+                fontFamily: 'Inter, sans-serif',
+                transition: 'border-color 0.15s, color 0.15s',
               }}
               onClick={handleCopy}
             >
-              Copy Summary for Doctor
+              📋 Copy Summary for Doctor
             </button>
 
             {showCopyToast && (
               <div
                 style={{
-                  color: '#2e7d32',
+                  color: '#166534',
                   textAlign: 'center',
-                  marginBottom: '16px',
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                  backgroundColor: '#e8f5e9',
+                  marginBottom: '10px',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  backgroundColor: '#f0fdf4',
                   padding: '8px',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
+                  border: '1px solid #86efac',
+                  maxWidth: '580px',
+                  width: '100%',
                 }}
               >
-                Copied!
+                ✓ Copied to clipboard
               </div>
             )}
 

@@ -1,106 +1,163 @@
 /* ============================================================
-   MaternalGuard — Clinical Design System
-   Font: Inter (400 & 600) from Google Fonts
+   VitaSakhi — Clinical Design System
+   Font: Inter (400, 500, 600) from Google Fonts
+   Forced light mode — no dark mode overrides allowed
    ============================================================ */
 
-/* ---- Reset & Base ---- */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Tokens ── */
+:root {
+  --color-bg:        #f0f4f8;
+  --color-surface:   #ffffff;
+  --color-border:    #e2e8f0;
+  --color-border-focus: #0891b2;
+  --color-text:      #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-light: #94a3b8;
+  --color-primary:   #0891b2;
+  --color-primary-dark: #0e7490;
+  --color-primary-light: #e0f2fe;
+
+  --color-high-bg:   #fff1f2;
+  --color-high-border: #fda4af;
+  --color-high-text: #9f1239;
+  --color-high-accent: #e11d48;
+
+  --color-mid-bg:    #fff7ed;
+  --color-mid-border: #fdba74;
+  --color-mid-text:  #9a3412;
+  --color-mid-accent: #ea580c;
+
+  --color-low-bg:    #f0fdf4;
+  --color-low-border: #86efac;
+  --color-low-text:  #166534;
+  --color-low-accent: #16a34a;
+
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg:   0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.05);
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
+/* ── Base ── */
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 15px;
-  background-color: #f8fafc;
-  color: #1e293b;
-  min-height: 100vh;
+  font-weight: 400;
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  color-scheme: light only !important;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---- Layout Shell ---- */
+/* ── Layout ── */
 .app-shell {
   min-height: 100vh;
+  background: var(--color-bg);
   display: flex;
   flex-direction: column;
 }
 
-/* ---- Header ---- */
+/* ── Header ── */
 .app-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0 24px;
-  height: 56px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 28px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .header-brand {
-  font-size: 20px;
-  font-weight: 600;
-  color: #0891b2;
-  letter-spacing: -0.3px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-brand::before {
+  content: '♥';
+  font-size: 16px;
+  color: #e11d48;
 }
 
 .header-subtitle {
   font-size: 12px;
-  color: #64748b;
-  font-weight: 400;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
 }
 
-/* ---- Main Content Area ---- */
+/* ── Main Content ── */
 .app-content {
   flex: 1;
-  padding: 32px 16px;
+  padding: 32px 16px 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0;
 }
 
-/* ---- Card ---- */
+/* ── Card ── */
 .card {
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
   padding: 28px 32px;
   width: 100%;
-  max-width: 560px;
+  max-width: 580px;
+  color: var(--color-text);
 }
 
 .card-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: #1e293b;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
   margin-bottom: 4px;
+  letter-spacing: -0.3px;
 }
 
 .card-subtitle {
   font-size: 13px;
-  color: #64748b;
-  margin-bottom: 24px;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+  font-weight: 400;
 }
 
-/* ---- Error Banner ---- */
+/* ── Error Banner ── */
 .error-banner {
   width: 100%;
-  max-width: 560px;
-  background: #fee2e2;
-  border: 1px solid #f87171;
-  color: #991b1b;
-  border-radius: 8px;
+  max-width: 580px;
+  background: #fff1f2;
+  border: 1px solid var(--color-high-border);
+  color: var(--color-high-text);
+  border-radius: var(--radius-md);
   padding: 12px 16px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* ---- Form Grid ---- */
+/* ── Vitals Form Grid ── */
 .vitals-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -108,44 +165,64 @@ body {
   margin-bottom: 28px;
 }
 
-@media (max-width: 600px) {
-  .vitals-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 520px) {
+  .vitals-grid { grid-template-columns: 1fr; }
 }
 
-/* ---- Field Group ---- */
+/* ── Field ── */
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .field-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text);
+  letter-spacing: 0.1px;
 }
 
 .field-input-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  overflow: hidden;
+}
+
+.field-input-row:focus-within {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
+}
+
+.field-input-row.has-error {
+  border-color: var(--color-high-accent);
 }
 
 .field-input {
   flex: 1;
-  height: 44px;
+  min-width: 0;
+  width: 100%;
+  height: 42px;
   padding: 0 12px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 6px;
+  border: none;
+  outline: none;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
-  color: #1e293b;
-  background: #ffffff;
-  outline: none;
-  transition: border-color 0.15s;
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
   -moz-appearance: textfield;
+  color-scheme: light only;
+}
+
+.field-input::placeholder {
+  color: var(--color-text-light);
+  font-weight: 400;
 }
 
 .field-input::-webkit-outer-spin-button,
@@ -153,151 +230,163 @@ body {
   -webkit-appearance: none;
 }
 
-.field-input:focus {
-  border-color: #0891b2;
-}
-
-.field-input.input-error {
-  border-color: #f87171;
-}
-
 .field-unit {
-  font-size: 13px;
-  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
   white-space: nowrap;
+  padding: 0 12px 0 4px;
+  background: transparent;
+  height: 42px;
+  display: flex;
+  align-items: center;
 }
 
 .field-hint {
-  font-size: 12px;
-  color: #64748b;
-  margin-top: 2px;
+  font-size: 11px;
+  color: var(--color-text-light);
+  margin-top: 1px;
 }
 
 .field-error-msg {
-  font-size: 12px;
-  color: #991b1b;
-  margin-top: 2px;
+  font-size: 11px;
+  color: var(--color-high-accent);
+  margin-top: 1px;
   font-weight: 600;
 }
 
-/* ---- Submit Button ---- */
+/* ── Submit Button ── */
 .submit-btn {
   width: 100%;
-  height: 52px;
-  background: #0891b2;
+  height: 50px;
+  background: linear-gradient(135deg, #0891b2, #0e7490);
   color: #ffffff;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.35);
+  letter-spacing: 0.2px;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #0e7490;
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(8, 145, 178, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .submit-btn:disabled {
-  opacity: 0.65;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* ---- Back Button ---- */
-.back-btn {
-  align-self: flex-start;
-  background: none;
-  border: none;
-  color: #0891b2;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 6px 0;
-  margin-bottom: 20px;
+/* ── Result View ── */
+.result-view {
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0;
 }
 
-.back-btn:hover {
-  color: #0e7490;
-}
-
-/* ---- Risk Badge ---- */
+/* ── Risk Badge Card ── */
 .risk-badge-card {
   width: 100%;
-  max-width: 560px;
-  border-radius: 10px;
+  max-width: 580px;
+  border-radius: var(--radius-lg);
   border: 2px solid;
   text-align: center;
-  padding: 32px 24px 28px;
-  margin-bottom: 16px;
+  padding: 36px 28px 30px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-badge-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
 }
 
 .risk-badge-card.risk-high {
-  background: #fee2e2;
-  border-color: #f87171;
+  background: var(--color-high-bg);
+  border-color: var(--color-high-border);
 }
+.risk-badge-card.risk-high::before { background: var(--color-high-accent); }
 
 .risk-badge-card.risk-mid {
-  background: #fef9c3;
-  border-color: #fbbf24;
+  background: var(--color-mid-bg);
+  border-color: var(--color-mid-border);
 }
+.risk-badge-card.risk-mid::before { background: var(--color-mid-accent); }
 
 .risk-badge-card.risk-low {
-  background: #dcfce7;
-  border-color: #4ade80;
+  background: var(--color-low-bg);
+  border-color: var(--color-low-border);
 }
+.risk-badge-card.risk-low::before { background: var(--color-low-accent); }
 
 .risk-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: #64748b;
-  margin-bottom: 8px;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
 }
 
 .risk-level-text {
-  font-size: 48px;
-  font-weight: 600;
+  font-size: 44px;
+  font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
 }
 
-.risk-high .risk-level-text { color: #991b1b; }
-.risk-mid  .risk-level-text { color: #854d0e; }
-.risk-low  .risk-level-text { color: #166534; }
+.risk-high .risk-level-text { color: var(--color-high-text); }
+.risk-mid  .risk-level-text { color: var(--color-mid-text); }
+.risk-low  .risk-level-text { color: var(--color-low-text); }
 
 .risk-confidence {
   font-size: 14px;
-  color: #64748b;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
-/* ---- Referral Card ---- */
+/* ── Referral Card ── */
 .referral-card {
   width: 100%;
-  max-width: 560px;
-  margin-bottom: 16px;
+  max-width: 580px;
+  margin-bottom: 14px;
 }
 
 .referral-action-text {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.referral-red    { color: #991b1b; }
-.referral-amber  { color: #854d0e; }
-.referral-green  { color: #166534; }
+.referral-red   { color: var(--color-high-text); }
+.referral-amber { color: var(--color-mid-text); }
+.referral-green { color: var(--color-low-text); }
 
+/* ── SHAP Reasons ── */
 .shap-section-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #64748b;
-  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .shap-list {
@@ -310,28 +399,46 @@ body {
 
 .shap-list li {
   font-size: 14px;
-  color: #1e293b;
+  color: var(--color-text);
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
 }
 
-.shap-bullet {
-  color: #0891b2;
-  font-size: 16px;
-  line-height: 1.3;
-  flex-shrink: 0;
+/* ── Back Button ── */
+.back-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  transition: border-color 0.15s, color 0.15s;
 }
 
-/* ---- Patient History Table ---- */
+.back-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Patient History ── */
 .history-card {
   width: 100%;
-  max-width: 560px;
+  max-width: 580px;
 }
 
 .history-empty {
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-text-muted);
   text-align: center;
   padding: 16px 0;
 }
@@ -345,21 +452,19 @@ body {
 .history-table th {
   text-align: left;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-text-muted);
   padding: 8px 10px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
 }
 
 .history-table td {
-  padding: 10px 10px;
+  padding: 10px;
   border-bottom: 1px solid #f1f5f9;
-  color: #1e293b;
+  color: var(--color-text);
 }
 
-.history-table tr:last-child td {
-  border-bottom: none;
-}
+.history-table tr:last-child td { border-bottom: none; }
 
 .risk-pill {
   display: inline-block;
@@ -369,48 +474,14 @@ body {
   font-weight: 600;
 }
 
-.risk-pill.risk-high {
-  background: #fee2e2;
-  color: #991b1b;
-}
+.risk-pill.risk-high { background: var(--color-high-bg); color: var(--color-high-text); }
+.risk-pill.risk-mid  { background: var(--color-mid-bg);  color: var(--color-mid-text); }
+.risk-pill.risk-low  { background: var(--color-low-bg);  color: var(--color-low-text); }
 
-.risk-pill.risk-mid {
-  background: #fef9c3;
-  color: #854d0e;
-}
-
-.risk-pill.risk-low {
-  background: #dcfce7;
-  color: #166534;
-}
-
-/* ---- Result View Stack ---- */
-.result-view {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ---- Mobile ---- */
+/* ── Mobile ── */
 @media (max-width: 600px) {
-  .card {
-    padding: 20px 16px;
-  }
-
-  .app-header {
-    padding: 0 16px;
-  }
-
-  .risk-level-text {
-    font-size: 40px;
-  }
-
-  .referral-action-text {
-    font-size: 16px;
-  }
-
-  .app-content {
-    padding: 20px 12px;
-  }
+  .card { padding: 20px 18px; }
+  .app-header { padding: 0 16px; }
+  .risk-level-text { font-size: 36px; }
+  .app-content { padding: 20px 12px 36px; }
 }

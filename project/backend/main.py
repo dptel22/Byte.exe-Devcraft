@@ -48,12 +48,19 @@ class PatientVitals(BaseModel):
     heart_rate: float = Field(description="Heart rate")
 
 
+class ShapReason(BaseModel):
+    feature: str
+    shap: float
+    direction: str
+
+
 class PredictionResponse(BaseModel):
     risk_level: str
     confidence: float
     color: str
     referral: str
     reasons: List[str]
+    top_reasons: List[ShapReason] = []
     top_shap_feature: str
     counseling_key: str
     next_visit_days: int
@@ -148,6 +155,11 @@ def demo_prediction() -> PredictionResponse:
             "Blood glucose level",
             "Systolic blood pressure",
             "Patient age",
+        ],
+        top_reasons=[
+            {"feature": "SystolicBP", "shap": 1.56, "direction": "elevating"},
+            {"feature": "BS", "shap": -0.46, "direction": "reducing"},
+            {"feature": "BodyTemp", "shap": 0.74, "direction": "elevating"},
         ],
         top_shap_feature="Blood Pressure",
         counseling_key="High Risk_Blood Pressure",

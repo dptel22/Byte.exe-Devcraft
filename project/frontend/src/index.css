@@ -1,11 +1,27 @@
-/* MaternalGuard — force light mode, override Vite scaffold defaults */
-:root {
-  color-scheme: light;
+/* ── VitaSakhi — force light mode everywhere ── */
+html {
+  color-scheme: light only;
+  background: #f0f4f8;
+  color: #1e293b;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   margin: 0;
-  background: #f8fafc;
+  background: #f0f4f8 !important;
+  color: #1e293b !important;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light only;
+}
+
+input, button, select, textarea {
+  color-scheme: light only;
+  background-color: #ffffff;
   color: #1e293b;
 }
 
@@ -18,7 +34,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Remove any remnant heading resets from scaffold */
 h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }

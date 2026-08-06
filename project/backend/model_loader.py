@@ -32,6 +32,20 @@ FEATURE_LABELS = {
     "age_glucose": "Age-glucose interaction",
 }
 
+# Maps snake_case FEATURE_IDS to PascalCase keys recognised by the frontend FEATURE_MAP
+FEATURE_ID_TO_API_NAME: Dict[str, str] = {
+    "age": "Age",
+    "systolic_bp": "SystolicBP",
+    "diastolic_bp": "DiastolicBP",
+    "blood_glucose": "BS",
+    "body_temp": "BodyTemp",
+    "heart_rate": "HeartRate",
+    "pulse_pressure": "PulsePressure",
+    "map": "MAP",
+    "bp_ratio": "BPRatio",
+    "age_glucose": "AgeGlucose",
+}
+
 FALLBACK_RISK_LABELS = {
     0: "Low Risk",
     1: "Mid Risk",
@@ -135,7 +149,11 @@ class MaternalRiskModelService:
 
         risk_level = self._decode_risk_label(predicted_class)
         metadata = RISK_METADATA[risk_level]
-        reasons = self._build_top_reasons(input_array, class_index)
+        top_reasons = self._build_top_reasons(input_array, class_index)
+        # Keep legacy plain-string reasons for backward compatibility
+        reasons = [FEATURE_LABELS[FEATURE_IDS[i]] for i in
+                   sorted(range(len(top_reasons)),
+                          key=lambda i: abs(top_reasons[i]["shap"]), reverse=True)[:3]]
 
         return {
             "risk_level": risk_level,
@@ -143,6 +161,7 @@ class MaternalRiskModelService:
             "color": metadata["color"],
             "referral": metadata["referral"],
             "reasons": reasons,
+            "top_reasons": top_reasons,
         }
 
     def _build_features(
@@ -205,12 +224,26 @@ class MaternalRiskModelService:
 
         return label_map[normalized]
 
-    def _build_top_reasons(self, input_array: np.ndarray, class_index: int) -> List[str]:
+    def _build_top_reasons(self, input_array: np.ndarray, class_index: int) -> List[Dict[str, Any]]:
         shap_values = self.explainer.shap_values(input_array)
         class_contributions = self._extract_class_contributions(shap_values, class_index)
 
         ranked_indices = np.argsort(np.abs(class_contributions))[::-1][:3]
-        return [FEATURE_LABELS[FEATURE_IDS[index]] for index in ranked_indices]
+        
+        reasons = []
+        for index in ranked_indices:
+            shap_val = round(float(class_contributions[index]), 4)
+            if class_index == 0:
+                direction = "reducing"
+            else:
+                direction = "elevating" if shap_val > 0 else "reducing"
+                
+            reasons.append({
+                "feature": FEATURE_ID_TO_API_NAME[FEATURE_IDS[index]],
+                "shap": shap_val,
+                "direction": direction,
+            })
+        return reasons
 
     def _extract_class_contributions(self, shap_values: Any, class_index: int) -> np.ndarray:
         if isinstance(shap_values, list):
